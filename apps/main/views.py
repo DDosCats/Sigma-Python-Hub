@@ -6,3 +6,6 @@ def index(request):
 
 def magazine(request):
     return render(request,'main/index2.html')  
+
+def about(request):
+    return render(request,'main/index3.html')
