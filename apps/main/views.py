@@ -2,7 +2,8 @@ from django.shortcuts import render, HttpResponse
 
 # Create your views here.
 def index(request):
-    return render(request, 'main/index.html')
+    return render(request,'main/index.html')
+
 
 def contacts(request):
     return render(request,'main/contacts.html')  
