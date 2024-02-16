@@ -9,20 +9,21 @@
             <div class="row g-4">
                 {% for post in posts %}
                     <div class="col-4">
-                        <a herf="#" class ="text-decoration-none text-white">
-                                <div class="card">
-                                    <img src="{{post.image.url}}" class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{post.title}}</h5>
-                                        <small class="text-muted">{{post.created_at}}</small>
-                                    </div>
-                                    <div class="card-footer">
-                                        <div class="d-flex justify-content-between text-center">
-                                            <h4><span class="badge ">👁️ {{post.views}}</span></h4>
-                                            <h4><span class="badge ">👍 {{post.likes}}</span></h4>
-                                        </div>
+                        <a herf="{%url 'blog:post' post.id %}" class ="text-decoration-none text-white">
+                                
+                            <div class="card">
+                                <img src="https://ih1.redbubble.net/image.1692121095.6948/st,small,507x507-pad,600x600,f8f8f8.jpg" class ="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{post.title}}</h5>
+                                    <small class="text-muted">{{post.created_at}}</small>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-between text-center">
+                                        <h4><span class="badge ">👁️ {{post.views}}</span></h4>
+                                        <h4><span class="badge ">👍 {{post.likes}}</span></h4>
                                     </div>
                                 </div>
+                            </div>
                         </a>
                     </div>
                 {% endfor %}
