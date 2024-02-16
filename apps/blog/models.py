@@ -11,6 +11,9 @@ class Post(models.Model):
     created_at = models.DateTimeField(verbose_name = 'When created',auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name = 'When updated', auto_now_add=True)
     
+    def __str__(self):
+        return f'{self.title} - {self.created_at} - {self.is_published}'
+    
     class meta:
         verbose_name = 'Post'
         verbose_nam_plural = 'Posts'
