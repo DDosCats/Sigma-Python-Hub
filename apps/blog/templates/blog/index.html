@@ -6,8 +6,8 @@
     
 <div class="mt-3 rounded-3 bg-body-tertiary p-4">
     <h3>Blog</h3>
-    <h3>Count post: {{ posts|length }}</h3>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <h3>Count posts: {{ posts|length }}</h3>
+    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Create post
     </button>
     <hr class="my-4">
@@ -32,7 +32,6 @@
             </div>
         {% endfor %}
     </div>
-
 </div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
