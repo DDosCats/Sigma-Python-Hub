@@ -13,4 +13,4 @@ def about(request):
 
 def navig(request):
     return render(request, 'main/navigation.html')
-
+ 
