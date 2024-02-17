@@ -5,13 +5,15 @@
 {% block content %}
     
         <div class="mt-3 rounded-3 bg-body-tertiary p-4">
-            <h3>Blog<h3>
-            <a herf="{%url 'blog:create'%}" class="btn-primary">Create post</a>
+            <h3>Blog</h3>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Create post
+            </button>
             <hr class="my-4">
             <div class="row g-4">
                 {% for post in posts %}
                     <div class="col-4">
-                        <a herf="{%url 'blog:post' post.id %}" class ="text-decoration-none text-white">
+                        <a href="{%url 'blog:post' post.id %}" class ="text-decoration-none text-white">
                                 
                             <div class="card">
                                 <img src="{{post.image.url}}" class ="card-img-top" alt="...">
@@ -33,4 +35,25 @@
             
             </div>
         </div>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+               <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Create post</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{% url 'blog:create' %}" method="post" enctype="multipart/form-data">
+
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        {{ create_form }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Створити</button>
+                   
+                </form>
+            </div>
+          </div>    
+
 {% endblock %}
