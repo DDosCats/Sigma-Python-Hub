@@ -31,6 +31,7 @@
                                         <h5><span class="badge ">👁️ {{post.views}}</span></h5>
                                         <h5><span class="badge ">🗨️ {{post.comments.count}}</span></h5>
                                         <h5><span class="btn" id="btn_like_{{post.id}}" style="cursor: pointer;">👍 {{post.likes}}</span></h5>
+                                        <h5><span class="btn" id="btn_dislike_{{post.id}}" style="cursor: pointer;">👎 {{post.dislike}}</span></h5>
                                     </div>
                                 </div>
                             </div>
@@ -47,7 +48,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Створити пост</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Create post</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form action="{% url 'blog:create' %}" method="post" enctype="multipart/form-data">
@@ -71,13 +72,24 @@
         fetch('{% url "blog:like" 0 %}'.replace('0', post_id))
         .then(response => response.json())
         .then(data => {
-            document.getElementById('btn_like_' + post_id).innerText = `👍 ${data.likes}`;
+            document.getElementById('btn_like_' + post_id).innerText = `👍 ${data.like}`;
         })
     }
-
     {% for post in posts %}
         document.getElementById('btn_like_{{post.id}}').addEventListener('click', function(){
             like({{post.id}});
+        });
+    {% endfor %}
+    function dislike(post_id){
+        fetch('{% url "blog:dislike" 0 %}'.replace('0', post_id))
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('btn_dislike_' + post_id).innerText = `👎 ${data.dislike}`;
+        })
+    }
+    {% for post in posts %}
+        document.getElementById('btn_dislike_{{post.id}}').addEventListener('click', function(){
+            dislike({{post.id}});
         });
     {% endfor %}
 </script>

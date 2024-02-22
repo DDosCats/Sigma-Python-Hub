@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 
-
 def index(request):
     
     posts = Post.objects.all()
@@ -48,10 +47,16 @@ def like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     post.likes += 1
     post.save()
-    return JsonResponse({'likes': post.likes})
+    return JsonResponse({'like': post.likes})
 
 def like_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
     comment.likes += 1
     comment.save()
     return JsonResponse({'likes': comment.likes})
+
+def dislikes(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    post.dislike += 1
+    post.save()
+    return JsonResponse({'dislike': post.dislike})
