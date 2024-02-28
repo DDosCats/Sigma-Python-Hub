@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 def index(request):
     
-    posts = Post.objects.all()
+    posts = Post.objects.filter(is_published=True)
     create_form = PostForm()
     
     context = {
@@ -46,26 +46,37 @@ def comment(request, post_id):
             comment = form.save(commit=False)
             print(comment)
             comment.post = post
+            comment.author = request.user
             comment.save()
     return redirect('blog:post', post_id=post_id)
 
 @login_required
 def like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    post.likes += 1
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
     post.save()
-    return JsonResponse({'like': post.likes})
+    return JsonResponse({'likes': post.likes.count()})
+
+
+@login_required
+def dislike(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.user in post.likes.all():
+        post.dislike.remove(request.user)
+    else:   
+        post.dislike.add(request.user)
+    post.save()
+    return JsonResponse({'dislikes': post.dislike.count()})
 
 @login_required
 def like_comment(request, post_id, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
-    comment.likes += 1
+    comment = get_object_or_404(Comment, id=comment_id, post__id=post_id)
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
     comment.save()
-    return JsonResponse({'likes': comment.likes})
-
-@login_required
-def dislikes(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    post.dislike += 1
-    post.save()
-    return JsonResponse({'dislike': post.dislike})
+    return JsonResponse({'likes': comment.likes.count()})
