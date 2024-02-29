@@ -2,10 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 def index(request):
     
-    posts = Post.objects.all()
+    posts = Post.objects.filter(is_published=True)
     create_form = PostForm()
     
     context = {
@@ -15,9 +17,12 @@ def index(request):
     
     return render(request, 'blog/index.html', context)
 
+@login_required
 def post(request, post_id):
     form_comment = CommentForm()
     post = get_object_or_404(Post, id=post_id)
+    post.views += 1
+    post.save()
     context = {
         'post': post,
         'comment_form': form_comment,
@@ -25,13 +30,18 @@ def post(request, post_id):
     
     return render(request, 'blog/post.html', context)
 
+@login_required
 def create(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            messages.success(request, 'Пост створено')
     return redirect('blog:index')
 
+@login_required
 def comment(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if request.method == 'POST':
@@ -40,23 +50,58 @@ def comment(request, post_id):
             comment = form.save(commit=False)
             print(comment)
             comment.post = post
+            comment.author = request.user
             comment.save()
+            messages.success(request, 'Comment add')
     return redirect('blog:post', post_id=post_id)
 
+@login_required
 def like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    post.likes += 1
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
     post.save()
-    return JsonResponse({'like': post.likes})
+    return JsonResponse({'likes': post.likes.count()})
 
-def like_comment(request, post_id, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
-    comment.likes += 1
-    comment.save()
-    return JsonResponse({'likes': comment.likes})
 
-def dislikes(request, post_id):
+@login_required
+def dislike(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    post.dislike += 1
+    if request.user in post.likes.all():
+        post.dislike.remove(request.user)
+    else:   
+        post.dislike.add(request.user)
     post.save()
-    return JsonResponse({'dislike': post.dislike})
+    return JsonResponse({'dislikes': post.dislike.count()})
+
+@login_required
+def like_comment(request, post_id, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id, post__id=post_id)
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+    comment.save()
+    return JsonResponse({'likes': comment.likes.count()})
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+    post.delete()
+    messages.success(request, 'Пост видалено')
+    return redirect('members:profile')
+
+@login_required
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Пост відредаговано')
+            return redirect('blog:post', post_id=post_id)
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'blog/edit_post.html', {'form': form, 'post': post})
