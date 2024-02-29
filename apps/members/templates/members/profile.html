@@ -14,11 +14,13 @@
         <p>Електронна пошта: {{ user.email }}</p>
         <p>Дата реєстрації: {{ user.date_joined }}</p>
         <p>Дата останнього входу: {{ user.last_login }}</p>
-
-        
 </div>
 <div class="mt-4 rounded-3 bg-body-tertiary p-4">
-        <h3 class="text-center">Your posts</h3>
+        <h3 class="text-center">Ваші пости</h3>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Створити пост
+             </button>
+        <hr class="my-4">
         <div class="row g-4">
             {% for post in user.posts.all %}
                 <div class="col-4">
@@ -45,4 +47,29 @@
                         </div>
                 </div>
                 {% endfor %}
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Створити пост</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'blog:create' %}" method="post" enctype="multipart/form-data">
+    
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {{ form_create_post }}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Створити</button>
+                    
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
 {% endblock %}

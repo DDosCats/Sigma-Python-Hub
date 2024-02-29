@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('blog', '0003_comment_dislike_post_author_post_dislike_and_more'),
+        ('blog', '0003_comment_dislike'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .forms import UserCreateForm
+from apps.blog.forms import PostForm
 
+# Create your views here.
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -16,17 +18,19 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, f'You entered like{username}')
+                messages.success(request, f'Ви увійшли як {username}')
                 return redirect('members:profile')
     else:
         form = AuthenticationForm()
     return render(request, 'members/login.html', {'form': form})
 
+
 @login_required
 def logout_view(request):
     logout(request)
-    messages.info(request,' You log out')
+    messages.info(request, 'Ви вийшли з системи')
     return redirect('members:login')
+
 
 def signup_view(request):
     if request.method == 'POST':
@@ -38,12 +42,17 @@ def signup_view(request):
             user.email = form.cleaned_data.get('email')
             user.save()
             login(request, user)
-            messages.success(request, f'You success login')
+            messages.success(request, f'Ви успішно зареєструвалися як {user.username}')
             return redirect('members:profile')
     else:
-        form =  UserCreateForm()
-    return render(request, 'members/signup.html',{'form':form})
+        form = UserCreateForm()
+    return render(request, 'members/signup.html', {'form': form})
 
 @login_required
 def profile_view(request):
-    return render(request, 'members/profile.html')
+    form_create_post = PostForm()
+    context = {
+        'form_create_post': form_create_post
+    }
+    
+    return render(request, 'members/profile.html', context)

@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 def index(request):
     
@@ -48,6 +49,7 @@ def comment(request, post_id):
             comment.post = post
             comment.author = request.user
             comment.save()
+            messages.success(request, 'Comment add')
     return redirect('blog:post', post_id=post_id)
 
 @login_required
@@ -80,3 +82,23 @@ def like_comment(request, post_id, comment_id):
         comment.likes.add(request.user)
     comment.save()
     return JsonResponse({'likes': comment.likes.count()})
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+    post.delete()
+    messages.success(request, 'Пост видалено')
+    return redirect('members:profile')
+
+@login_required
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Пост відредаговано')
+            return redirect('blog:post', post_id=post_id)
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'blog/edit_post.html', {'form': form, 'post': post})

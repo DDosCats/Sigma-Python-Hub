@@ -16,8 +16,6 @@
             <div class="row g-4">
                 {% for post in posts %}
                     <div class="col-4">
-                        
-                       
                             <div class="card">
                                 <a href="{% url 'blog:post' post.id %}" class="text-decoration-none text-white">
                                 <img src="{{post.image.url}}" class="card-img-top" alt="...">
@@ -73,9 +71,10 @@
         fetch('{% url "blog:like" 0 %}'.replace('0', post_id))
         .then(response => response.json())
         .then(data => {
-            document.getElementById('btn_like_' + post_id).innerText = `👍 ${data.like}`;
+            document.getElementById('btn_like_' + post_id).innerText = `👍 ${data.likes}`;
         })
     }
+
     {% for post in posts %}
         document.getElementById('btn_like_{{post.id}}').addEventListener('click', function(){
             like({{post.id}});
