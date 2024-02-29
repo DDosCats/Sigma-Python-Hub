@@ -16,12 +16,15 @@ class Post(models.Model):
     updated_at = models.DateTimeField(verbose_name = 'When updated', auto_now_add=True)
     
     def __str__(self):
-        return f'{self.title} - {self.created_at} - {self.is_published}'
+        return f'{self.title} - {self.author.username} - {self.created_at} - {self.is_published}'
+
     
-    class meta:
+    class Meta:
         verbose_name = 'Post'
-        verbose_nam_plural = 'Posts'
+        verbose_name_plural = 'Posts'
         ordering = ['-created_at']
+
+
         
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Post', related_name='comments')
