@@ -4,15 +4,19 @@ from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+#Paginator
+from django.core.paginator import Paginator
 
 def index(request):
     
     posts = Post.objects.filter(is_published=True)
     create_form = PostForm()
     
+    paginator = Paginator(posts, 3)
+    
     context = {
-        'posts': posts,
-        'form': create_form
+        'posts': paginator.get_page(request.GET.get('page')),
+        'create_form': create_form,
     }
     
     return render(request, 'blog/index.html', context)
@@ -69,12 +73,12 @@ def like(request, post_id):
 @login_required
 def dislike(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    if request.user in post.likes.all():
+    if request.user in post.dislike.all():
         post.dislike.remove(request.user)
     else:   
         post.dislike.add(request.user)
     post.save()
-    return JsonResponse({'dislikes': post.dislike.count()})
+    return JsonResponse({'dislike': post.dislike.count()})
 
 @login_required
 def like_comment(request, post_id, comment_id):

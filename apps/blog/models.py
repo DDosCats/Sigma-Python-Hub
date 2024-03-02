@@ -1,3 +1,8 @@
+import os
+import uuid
+
+from PIL import Image
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -5,6 +10,7 @@ from django.contrib.auth.models import User
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', related_name='posts', null=True, default=None)
     
+    image_thumbnail = models.ImageField(verbose_name='Мініатюра', upload_to='post_images/', blank=True)
     title = models.CharField(verbose_name = 'Title',max_length=225)
     content = models.TextField(verbose_name = 'Content')
     image = models.ImageField(verbose_name = 'Image',upload_to='post_images/')
@@ -16,13 +22,24 @@ class Post(models.Model):
     updated_at = models.DateTimeField(verbose_name = 'When updated', auto_now_add=True)
     
     def __str__(self):
-        return f'{self.title} - {self.author.username} - {self.created_at} - {self.is_published}'
+        return f'{self.title} - - {self.created_at} - {self.is_published}'
 
     
     class Meta:
         verbose_name = 'Post'
         verbose_name_plural = 'Posts'
         ordering = ['-created_at']
+        
+        
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)     
+        if self.image:
+            img = Image.open(self.image.path)
+            if img.height > 440 or img.width > 820:
+                output_size = (820, 440)
+                img.thumbnail(output_size)
+                img.save(self.image.path)
+
 
 
         

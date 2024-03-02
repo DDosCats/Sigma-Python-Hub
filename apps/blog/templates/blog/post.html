@@ -58,7 +58,7 @@
         fetch('{% url "blog:like" post.id %}')
         .then(response => response.json())
         .then(data => {
-            document.getElementById('btn_like').innerText = `👍 ${data.likes}`;
+            document.getElementById('btn_like_').innerText = `👍 ${data.likes}`;
         })
         .catch(error => console.log(error));
     });
@@ -67,10 +67,18 @@
         fetch('{% url "blog:dislike" post.id %}')
         .then(response => response.json())
         .then(data => {
-            document.getElementById('btn_dislike').innerText = `👎 ${data.dislike}`;
+            document.getElementById('btn_dislike_').innerText = `👎 ${data.dislike}`;
         })
         .catch(error => console.log(error));
     });
 
+    function like_comment(comment_id){
+        fetch('{% url "blog:like_comment" post.id 0 %}'.replace('0', comment_id))
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('btn_like_comment_' + comment_id).innerText = `❤️ ${data.likes}`;
+        })
+        .catch(error => console.log(error));
+    }
 </script>
 {% endblock %}
