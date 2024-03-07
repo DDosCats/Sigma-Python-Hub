@@ -7,6 +7,9 @@ from django.contrib import messages
 #Paginator
 from django.core.paginator import Paginator
 
+
+# Create your views here.
+# @login_required
 def index(request):
     
     posts = Post.objects.filter(is_published=True)
@@ -21,8 +24,10 @@ def index(request):
     
     return render(request, 'blog/index.html', context)
 
+
 @login_required
 def post(request, post_id):
+    # post = Post.objects.get(id=post_id)
     form_comment = CommentForm()
     post = get_object_or_404(Post, id=post_id)
     post.views += 1
@@ -56,7 +61,7 @@ def comment(request, post_id):
             comment.post = post
             comment.author = request.user
             comment.save()
-            messages.success(request, 'Comment add')
+            messages.success(request, 'Коментар додано')
     return redirect('blog:post', post_id=post_id)
 
 @login_required
@@ -68,17 +73,6 @@ def like(request, post_id):
         post.likes.add(request.user)
     post.save()
     return JsonResponse({'likes': post.likes.count()})
-
-
-@login_required
-def dislike(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    if request.user in post.dislike.all():
-        post.dislike.remove(request.user)
-    else:   
-        post.dislike.add(request.user)
-    post.save()
-    return JsonResponse({'dislike': post.dislike.count()})
 
 @login_required
 def like_comment(request, post_id, comment_id):
@@ -100,6 +94,7 @@ def delete_post(request, post_id):
 @login_required
 def edit_post(request, post_id):
     post = get_object_or_404(Post, id=post_id, author=request.user)
+    
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
@@ -109,3 +104,12 @@ def edit_post(request, post_id):
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/edit_post.html', {'form': form, 'post': post})
+@login_required
+def dislike(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.user in post.dislike.all():
+        post.dislike.remove(request.user)
+    else:   
+        post.dislike.add(request.user)
+    post.save()
+    return JsonResponse({'dislike': post.dislike.count()})

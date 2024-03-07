@@ -5,8 +5,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .forms import UserCreateForm
+from .forms import UserCreateForm, ProfileUpdateForm , UserUpdateForm
 from apps.blog.forms import PostForm
+from .models import Profile
+
 
 # Create your views here.
 def login_view(request):
@@ -41,6 +43,7 @@ def signup_view(request):
             user.last_name = form.cleaned_data.get('last_name')
             user.email = form.cleaned_data.get('email')
             user.save()
+            Profile.objects.create(user=user)
             login(request, user)
             messages.success(request, f'Ви успішно зареєструвалися як {user.username}')
             return redirect('members:profile')
@@ -51,8 +54,13 @@ def signup_view(request):
 @login_required
 def profile_view(request):
     form_create_post = PostForm()
+    user_form = UserUpdateForm(instance=request.user)
+    profile_form = ProfileUpdateForm(instance=request.user.profile)
     context = {
-        'form_create_post': form_create_post
+        'form_create_post': form_create_post,
+        'user_form': user_form,
+        'profile_form': profile_form,
     }
     
     return render(request, 'members/profile.html', context)
+
