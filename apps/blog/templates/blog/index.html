@@ -17,38 +17,10 @@
             <div class="row g-4">
                 {% for post in posts %}
                     <div class="col-4">
-                        
-                       
-                            <div class="card">
-                                <a href="{% url 'blog:post' post.id %}" class="text-decoration-none text-white">
-                                <img src="{{post.get_thumbnail}}" class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{post.title}}</h5>
-                                    <p class="card-text">@{{post.author}}</p>
-                                    <small class="text-muted">{{post.created_at|timesince}}</small>
-                                    <!-- <div class="d-flex justify-content-between">
-                                        <div class="d-flex align-items-center">
-                                            <img src="https://via.placeholder.com/30" class="rounded-circle me-2" alt="...">
-                                            <span>{{post.author}}</span>
-                                        </div>
-                                        <div>
-                                            <span class="badge bg-secondary">{{post.category}}</span>
-                                        </div>
-                                    </div> -->
-                                </div>
-                            </a>
-                                <div class="card-footer">
-                                    <div class="d-flex justify-content-between text-center">
-                                        <h5><span class="badge ">👁️ {{post.views}}</span></h5>
-                                        <h5><span class="badge ">🗨️ {{post.comments.count}}</span></h5>
-                                        <h5><span class="btn" id="btn_like_{{post.id}}" style="cursor: pointer;">👍 {{post.likes.count}}</span></h5>
-                                        <h5><span class="btn" id="btn_dislike_{{post.id}}" style="cursor: pointer;">👎 {{post.dislike.count}}</span></h5>
 
-                                    </div>
-                                </div>
-                            </div>
-                        
-                        
+                              <div class ="card">
+                                {%include 'blog/_include_blocks/_card_post.html'%}
+                              </div>
                     </div>
                 {% endfor %}
 

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.main',
     'apps.blog',
     'apps.members',
+    'imagekit' 
 ]
 
 

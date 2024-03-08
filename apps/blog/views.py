@@ -104,6 +104,7 @@ def edit_post(request, post_id):
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/edit_post.html', {'form': form, 'post': post})
+
 @login_required
 def dislike(request, post_id):
     post = get_object_or_404(Post, id=post_id)

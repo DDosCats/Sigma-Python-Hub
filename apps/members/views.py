@@ -64,3 +64,15 @@ def profile_view(request):
     
     return render(request, 'members/profile.html', context)
 
+@login_required
+def profile_update_view(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Ваш профіль успішно оновлено')
+        else:
+            messages.error(request, 'Вибачте, щось пішло не так')
+    return redirect('members:profile')
