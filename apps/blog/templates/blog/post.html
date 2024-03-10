@@ -24,7 +24,7 @@
                 <h5><span class="btn btn-secondary" id="btn_dislike_">👎 {{post.dislike.count}}</span></h5>
             </div>
             <hr class="my-4">
-            <p>{{post.content}}</p>
+            <p>{{post.content|safe}}</p>
         </div>
         <div class="mt-3 rounded-3 bg-body-tertiary p-4">
             <h5>Коментарі</h5>
