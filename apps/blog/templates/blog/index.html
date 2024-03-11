@@ -14,18 +14,7 @@
                Створити пост
             </button>
             <hr class="my-4">
-            <div class="row g-4">
-                {% for post in posts %}
-                    <div class="col-4">
-
-                              <div class ="card">
-                                {%include 'blog/_include_blocks/_card_post.html'%}
-                              </div>
-                    </div>
-                {% endfor %}
-
-            
-            </div>
+            {% include 'blog/_include_blocks/_posts_show.html' with posts=posts edit=False %}
 
             <nav aria-label="Page navigation example" class="mt-4 align-items-center d-flex justify-content-center">
                 <ul class="pagination">
@@ -68,26 +57,35 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Створити пост</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-        <div class="modal-body">
-          <form id="postForm" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ create_form.as_p }}
-            <img id="cropperImage" src="#" alt="Обрізане зображення" style="max-height: 200px">
-            <button type="submit" class="btn btn-primary">Відправити</button>
-        </form>
-
+<div class="modal modal-xl fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Створити пост</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+        <!-- <form action="{% url 'blog:create' %}" method="post" enctype="multipart/form-data" id="create_form"> -->
+
+            
+
+            <div class="modal-body">
+              <form id="postForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ create_form.as_p }}
+                <img id="cropperImage" src="#" alt="Обрізане зображення" style="max-height: 200px">
+                <button type="submit" class="btn btn-primary">Відправити</button>
+            </form>
+                <!-- {% csrf_token %}
+                {{ create_form }} -->
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" id="btn_create">Створити</button>
+                
+            </div> -->
+        </form>
       </div>
     </div>
   </div>
-</div>
 
   <script>
     
@@ -104,8 +102,6 @@
             like({{post.id}});
         });
     {% endfor %}
-    
-
     function dislike(post_id){
       fetch('{% url "blog:dislike" 0 %}'.replace('0', post_id))
       .then(response => response.json())
@@ -113,12 +109,13 @@
           document.getElementById('btn_dislike_' + post_id).innerText = `👎 ${data.dislike}`;
       })
     }
-
+  
     {% for post in posts %}
       document.getElementById('btn_dislike_{{post.id}}').addEventListener('click', function(){
           dislike({{post.id}});
       });
     {% endfor %}
+
 
     var cropper;
     document.getElementById('imageInput').addEventListener('change', function(event) {
@@ -178,6 +175,10 @@
               });
           }, 'image/jpeg');
       });
+
+
 </script>
+  
+
 {% endblock %}
 
