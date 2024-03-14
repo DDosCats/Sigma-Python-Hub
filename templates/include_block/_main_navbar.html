@@ -35,14 +35,15 @@
               <img src="{{user.profile.get_avatar}}" alt="mdo" width="32" height="32" class="rounded-circle">
             </a>
             <ul class="dropdown-menu text-small" style="">
-              <li><a class="dropdown-item" href="{% url 'members:profile' %}">Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'members:profile' user.username %}"><i class="fa-regular fa-user"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'members:search_profile'%}"><i class="fa-regular fa-user-magnifying-glass"></i>Search peoples</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{% url 'members:logout' %}">Sign out</a></li>
+              <li><a class="dropdown-item" href="{% url 'members:logout' %}"><i class="fa-regular fa-right-from-bracket"></i>Sign out</a></li>
             </ul>
           </div>
             {% else %}
-            <a class="btn btn-outline-primary btn-sm" href="{% url 'members:login' %}">Увійти</a>
-            <a class="btn btn-outline-warning btn-sm" href="{% url 'members:signup' %}">Зареєструватися</a>
+            <a class="btn btn-outline-primary btn-sm" href="{% url 'members:login' %}"><i class="fa-regular fa-right-to-bracket"></i>Log in</a>
+            <a class="btn btn-outline-warning btn-sm" href="{% url 'members:signup' %}"><i class="fa-regular fa-user-plus"></i>Sign up</a>
           {% endif %}
       </div>
     </div>

@@ -99,6 +99,8 @@ def edit_post(request, post_id):
     
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
+        print(request.POST)
+        print(request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, 'Пост відредаговано')

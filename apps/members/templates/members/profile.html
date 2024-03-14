@@ -11,34 +11,47 @@
   <hr class="my-4">  
     <div class="row g-4">
         <div class="col-12 col-md-4">
-          <img src="{{user.profile.get_avatar}}" class="img-fluid rounded-circle mx-auto d-block" alt="...">
-          <div class="d-flex justify-content-center mt-2">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-              Редагувати профіль
-            </button>
-          </div>
+          <img src="{{profile.get_avatar}}" class="img-fluid rounded-circle mx-auto d-block" alt="...">
+          {%if not another_user%}
+            <div class="d-flex justify-content-center mt-2">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                Редагувати профіль
+              </button>
+            </div>
+          {%endif%}
         </div>
         <div class="col-8">
-          <p>Ім'я користувача: {{ user.username }}</p>
-          <p>Ім'я: {{ user.first_name }}</p>
-          <p>Прізвище: {{ user.last_name }}</p>
-          <p>Електронна пошта: {{ user.email }}</p>
-          <p>Дата реєстрації: {{ user.date_joined }}</p>
-          <p>Дата останнього входу: {{ user.last_login }}</p>
-          <p>Біо: {{ user.profile.bio|safe }}</p>
-          <p>Дата народження: {{ user.profile.birth_date }}</p>
-          <p>Місце проживання: {{ user.profile.location }}</p>
+          <p>Ім'я користувача: {{ user_profile.username }}</p>
+          <p>Ім'я: {{ user_profile.first_name }}</p>
+          <p>Прізвище: {{ user_profile.last_name }}</p>
+          <p>Електронна пошта: {{ user_profile.email }}</p>
+          <p>Дата реєстрації: {{ user_profile.date_joined }}</p>
+          <p>Дата останнього входу: {{ user_profile.last_login }}</p>
+          <p>Біо: {{ profile.bio|safe }}</p>
+          <p>Дата народження: {{ profile.birth_date }}</p>
+          <p>Місце проживання: {{ profile.location }}</p>
           
         </div>
     </div>
 </div>
-        <hr class="my-4">
-        {% include 'blog/_include_blocks/_posts_show.html' with posts=user.posts.all edit=True %}
+    <div class="mt-4 rounded-3 bg-body-tertiary p-4">
+      <h3 class="text-center">Пости</h3>
+      <p class="text-center">Кількість Постів: {{ user.posts.all.count }}</p>
+      {%if not another_user%}
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Створити пост
+          </button>
+
+      <hr class="my-4">
+      {% include 'blog/_include_blocks/_posts_show.html' with posts=user_profile.posts.all edit=True %}
+      {%else%}
+      <hr class="my-4">
+      {% include 'blog/_include_blocks/_posts_show.html' with posts=user_profile.posts.all edit=False %}
+      {% endif %}
     </div>
 
 
-
-
+{%if not another_user%}
       <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -56,5 +69,36 @@
           </div>
         </div>
       </div>
+{%endif%}
+
+<script>
+    
+  function like(post_id){
+      fetch('{% url "blog:like" 0 %}'.replace('0', post_id))
+      .then(response => response.json())
+      .then(data => {
+          document.getElementById('btn_like_' + post_id).innerText = `👍 ${data.likes}`;
+      })
+  }
+
+  {% for post in user_profile.posts.all %}
+      document.getElementById('btn_like_{{post.id}}').addEventListener('click', function(){
+          like({{post.id}});
+      });
+  {% endfor %}
+  function dislike(post_id){
+    fetch('{% url "blog:dislike" 0 %}'.replace('0', post_id))
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('btn_dislike_' + post_id).innerText = `👎 ${data.dislike}`;
+    })
+  }
+
+  {% for post in user_profile.posts.all %}
+    document.getElementById('btn_dislike_{{post.id}}').addEventListener('click', function(){
+        dislike({{post.id}});
+    });
+  {% endfor %}
+  </script>
 
 {% endblock %}

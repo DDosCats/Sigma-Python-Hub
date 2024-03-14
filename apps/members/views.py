@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
@@ -10,7 +10,6 @@ from apps.blog.forms import PostForm
 from .models import Profile
 
 
-# Create your views here.
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -52,16 +51,32 @@ def signup_view(request):
     return render(request, 'members/signup.html', {'form': form})
 
 @login_required
-def profile_view(request):
-    form_create_post = PostForm()
-    user_form = UserUpdateForm(instance=request.user)
-    profile_form = ProfileUpdateForm(instance=request.user.profile)
-    context = {
-        'form_create_post': form_create_post,
-        'user_form': user_form,
-        'profile_form': profile_form,
-    }
+def profile_view(request, username=None):
+    if username is None:
+        username = request.user
     
+    
+    if request.user.username == username:
+        form_create_post = PostForm()
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
+        context = {
+            'form_create_post': form_create_post,
+            'user_form': user_form,
+            'profile_form': profile_form,
+            'user_profile': request.user,
+            'profile': request.user.profile,
+            'another_user': False,
+        }
+    else:
+        user = get_object_or_404(User, username=username)
+        profile = get_object_or_404(Profile, user=user)
+        context = {
+            'another_user': True,
+            'user_profile': user,
+            'profile': profile,
+            'is_following': request.user.profile.is_following(user),
+        }
     return render(request, 'members/profile.html', context)
 
 @login_required
@@ -75,4 +90,13 @@ def profile_update_view(request):
             messages.success(request, 'Ваш профіль успішно оновлено')
         else:
             messages.error(request, 'Вибачте, щось пішло не так')
-    return redirect('members:profile')
+    return redirect('main:index')
+    
+def search_view(request):
+    if request.method == 'GET':
+        query = request.GET.get('q')
+        if query:
+            users = User.objects.filter(username__icontains=query)
+            return render(request, 'members/search.html', {'users': users})
+    return render(request, 'members/search.html', {'users': None})
+
