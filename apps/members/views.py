@@ -10,6 +10,7 @@ from apps.blog.forms import PostForm
 from .models import Profile
 
 
+# Create your views here.
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
@@ -20,7 +21,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Ви увійшли як {username}')
-                return redirect('members:profile')
+                return redirect('members:profile', username=username)
     else:
         form = AuthenticationForm()
     return render(request, 'members/login.html', {'form': form})
@@ -45,7 +46,7 @@ def signup_view(request):
             Profile.objects.create(user=user)
             login(request, user)
             messages.success(request, f'Ви успішно зареєструвалися як {user.username}')
-            return redirect('members:profile')
+            return redirect('members:profile', username=user.username)
     else:
         form = UserCreateForm()
     return render(request, 'members/signup.html', {'form': form})
@@ -91,7 +92,11 @@ def profile_update_view(request):
         else:
             messages.error(request, 'Вибачте, щось пішло не так')
     return redirect('main:index')
+    # return redirect('members:profile username')
     
+    
+    
+#Search People
 def search_view(request):
     if request.method == 'GET':
         query = request.GET.get('q')
@@ -100,3 +105,16 @@ def search_view(request):
             return render(request, 'members/search.html', {'users': users})
     return render(request, 'members/search.html', {'users': None})
 
+
+@login_required
+def follow_view(request, username):
+    user = get_object_or_404(User, username=username)
+    if request.user != user:
+        profile = request.user.profile
+        if profile.is_following(user):
+            profile.unfollow(user)
+            messages.info(request, f'Ви відписались від {user.username}')
+        else:
+            profile.follow(user)
+            messages.success(request, f'Ви підписались на {user.username}')
+    return redirect('members:profile', username=username)
