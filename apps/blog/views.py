@@ -6,6 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 #Paginator
 from django.core.paginator import Paginator
+#Search Q
+from django.db.models import Q
+# send email
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -49,6 +53,10 @@ def create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            send_mail(
+                f'New post: {post.title} created by {post.author}'
+                'New post created',
+                ['syvashroman0109@gmail.com'])
             messages.success(request, 'Пост створено')
     return redirect('blog:index')
 
@@ -99,8 +107,6 @@ def edit_post(request, post_id):
     
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
-        print(request.POST)
-        print(request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, 'Пост відредаговано')
@@ -108,7 +114,6 @@ def edit_post(request, post_id):
     else:
         form = PostForm(instance=post)
     return render(request, 'blog/edit_post.html', {'form': form, 'post': post})
-
 @login_required
 def dislike(request, post_id):
     post = get_object_or_404(Post, id=post_id)
@@ -118,3 +123,5 @@ def dislike(request, post_id):
         post.dislike.add(request.user)
     post.save()
     return JsonResponse({'dislike': post.dislike.count()})
+
+

@@ -24,7 +24,6 @@ SECRET_KEY = 'django-insecure-ml^lwj9k&2wg%^=-ioh(h%=8$)9cba_(hi$=v%1p^h@&c$x2u=
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -158,3 +157,8 @@ CKEDITOR_CONFIGS = {
         ],
     }
 }
+
+from config import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
