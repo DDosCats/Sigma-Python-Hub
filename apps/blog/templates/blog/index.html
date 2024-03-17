@@ -7,14 +7,15 @@
 {% block content %}
     
 
+
         <div class="mt-3 rounded-3 bg-body-tertiary p-4">
             <h3>Блог</h3>
             <!-- Button trigger modal -->
             {% if user.is_authenticated %}
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-               Створити пост
+            Створити пост
             </button>
-            <p>Total number of posts: {{ post_count }}</p>
+            <h5>Кількість статей: {{ user.posts.all.count }}</h5>
             {% endif %}
             <hr class="my-4">
             {% include 'blog/_include_blocks/_posts_show.html' with posts=posts edit=False %}
