@@ -53,10 +53,6 @@ def create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            send_mail(
-                f'New post: {post.title} created by {post.author}'
-                'New post created',
-                ['syvashroman0109@gmail.com'])
             messages.success(request, 'Пост створено')
     return redirect('blog:index')
 

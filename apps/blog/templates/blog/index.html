@@ -15,7 +15,7 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             Створити пост
             </button>
-            <h5>Кількість статей: {{ user.posts.all.count }}</h5>
+            <h5>Кількість статей: {{ posts.count }}</h5>
             {% endif %}
             <hr class="my-4">
             {% include 'blog/_include_blocks/_posts_show.html' with posts=posts edit=False %}
