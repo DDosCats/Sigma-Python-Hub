@@ -6,9 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 #Paginator
 from django.core.paginator import Paginator
-#Search Q
+
 from django.db.models import Q
-# send email
 from django.core.mail import send_mail
 
 
@@ -31,7 +30,7 @@ def index(request):
 
 @login_required
 def post(request, post_id):
-    # post = Post.objects.get(id=post_id)
+     # post = Post.objects.get(id=post_id)
     form_comment = CommentForm()
     post = get_object_or_404(Post, id=post_id)
     post.views += 1
@@ -121,3 +120,6 @@ def dislike(request, post_id):
     return JsonResponse({'dislike': post.dislike.count()})
 
 
+def search(request):
+     query = request.GET.get('q')
+    
