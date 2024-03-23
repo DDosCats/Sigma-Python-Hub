@@ -24,6 +24,11 @@ class ImageAdmin(admin.ModelAdmin):
 @admin.register(Catalog)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'image_tag_thumbnail')
+ dev
+    prepopulated_fields = {'slug': ('name',)} # це поле автоматично заповнюється на основі іншого поля
+    readonly_fields = ('image_tag_thumbnail',) 
+    
+
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('image_tag_thumbnail',) 
     
@@ -33,3 +38,4 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price_display', 'created_at', 'updated_at', 'image_tag')
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ProductCategoryInline, ImageInline]
+ main
