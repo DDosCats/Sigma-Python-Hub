@@ -10,7 +10,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from imagekit.models import  ProcessedImageField, ImageSpecField
 from imagekit.processors import ResizeToFill
 
-# Create your models here.
+
 class Catalog(MPTTModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, verbose_name='Назва')
