@@ -9,4 +9,4 @@ urlpatterns = [
     path('<slug:slug>/', ProductByCategoryView.as_view() , name='category'),
     path('<slug:category_slug>/<slug:slug>/', ProductDetailView.as_view(), name='product'),
 ]
-#я просто тут 
+#я просто тут щось напишу і ви все подивитесь
