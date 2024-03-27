@@ -10,7 +10,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from imagekit.models import  ProcessedImageField, ImageSpecField
 from imagekit.processors import ResizeToFill
 
-# Create your models here.
+
 class Catalog(MPTTModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255, verbose_name='Назва')
@@ -92,19 +92,20 @@ class Product(models.Model):
     
     
     def get_absolute_url(self):
-        return reverse("catalog:product", kwargs={"slug": self.slug})
+        return reverse("catalog:product", kwargs={"category_slug": self.main_category().slug, "slug": self.slug})
     
-    def images(self):
+    def all_images(self):
         return Image.objects.filter(product=self.id)
     
     def main_image(self):
         image = Image.objects.filter(product=self.id, is_main=True).first()
         if image:
             return image
-        return self.images().first()
+        return self.all_images().first()
         
     def main_category(self):
-        category = self.category.filter(category__productcategory__is_main=True).first() #вибираємо категорію, яка є основною
+        category = self.category.filter(productcategory__is_main=True).first()
+        print(category)
         if category:
             return category
         return self.category.first()
