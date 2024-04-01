@@ -7,18 +7,10 @@
 {% block content %}
 
 <div class="mt-4 rounded-3 bg-body-tertiary p-4">
-  <h3 class="text-center">Профіль</h3>
-  <hr class="my-4">  
     <div class="row g-4">
         <div class="col-12 col-md-4">
           <img src="{{profile.get_avatar}}" class="img-fluid rounded-circle mx-auto d-block" alt="...">
-          {% if not another_user %}         
-          <div class="d-flex justify-content-center mt-2">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-              Редагувати профіль
-            </button>
-          </div>
-          {% else %}
+          {% if another_user %}         
           <div class="d-flex justify-content-center mt-2">
             {% if not is_following %}
             <a href="{% url 'members:follow' user_profile.username %}" class="btn btn-primary">Підписатися</a>
@@ -28,17 +20,60 @@
           </div>
           {% endif %}
         </div>
+        
+      {% if not profile.is_private or not another_user  %}
         <div class="col-8">
-          <p>Ім'я користувача: {{ user_profile.username }}</p>
-          <p>Ім'я: {{ user_profile.first_name }}</p>
-          <p>Прізвище: {{ user_profile.last_name }}</p>
-          <p>Електронна пошта: {{ user_profile.email }}</p>
-          <p>Дата реєстрації: {{ user_profile.date_joined }}</p>
-          <p>Дата останнього входу: {{ user_profile.last_login }}</p>
-          <p>Біо: {{ profile.bio|safe }}</p>
-          <p>Дата народження: {{ profile.birth_date }}</p>
-          <p>Місце проживання: {{ profile.location }}</p>
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active" id="simple-tab-0" data-bs-toggle="tab" href="#simple-tabpanel-0" role="tab" aria-controls="simple-tabpanel-0" aria-selected="true">Info</a>
+            </li>
+            {% if not another_user %}
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="simple-tab-1" data-bs-toggle="tab" href="#simple-tabpanel-1" role="tab" aria-controls="simple-tabpanel-1" aria-selected="false">Settings</a>
+            </li>
+            {% endif %}
+          </ul>
+          <div class="tab-content pt-5" id="tab-content">
+            <div class="tab-pane active" id="simple-tabpanel-0" role="tabpanel" aria-labelledby="simple-tab-0">
+              <p>Ім'я користувача: {{ user_profile.username }}</p>
+              <p>Ім'я: {{ user_profile.first_name }}</p>
+              <p>Прізвище: {{ user_profile.last_name }}</p>
+              <p>Електронна пошта: {{ user_profile.email }}</p>
+              <p>Дата реєстрації: {{ user_profile.date_joined }}</p>
+              <p>Дата останнього входу: {{ user_profile.last_login }}</p>
+              <p>Біо: {{ profile.bio|safe }}</p>
+              <p>Дата народження: {{ profile.birth_date }}</p>
+              <p>Місце проживання: {{ profile.location }}</p>
           
+            </div>
+            {% if not another_user %}    
+            <div class="tab-pane" id="simple-tabpanel-1" role="tabpanel" aria-labelledby="simple-tab-1">
+                <h5>Редагування профілю</h5>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                  Змінити профіль
+                </button>
+                <hr class="my-4">
+                <h5>Приватність</h5>
+                <form action="{% url 'members:privacy' user_profile.username %}" method="post">
+                  {% csrf_token %}
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" name="is_private" {% if profile.is_private %} checked {% endif %}>
+                    <label class="form-check-label" for="flexCheckDefault">
+                      Приватний профіль
+                    </label>
+                  </div>
+                  <button type="submit" class="btn btn-primary mt-4">Зберегти</button>
+                </form>
+                <hr class="my-4">
+                <h5>Змінити пароль</h5>
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                    Змінити пароль
+                  </button>
+                <hr class="my-4">              
+            
+            </div>
+            {% endif %}
+          </div>
         </div>
         {% if profile.get_followers %}
         <div class="col-12">
@@ -60,7 +95,7 @@
           </div>
         </div>
         {% endif %}
-        {% if profile.get_followers %}
+        {% if profile.get_following %}
         <div class="col-12">
           <hr class="my-4">
           <h3 class="text-center">Підписники</h3>
@@ -72,23 +107,23 @@
               <a href="{% url 'members:profile' follower.user.username %}" class="text-decoration-none text-primary hover-underline">
                   <small class="ms-3">@{{ follower.user.username }}</small>
               </a>
-          </div>
-        </li>
+              </div></li>
+            
             {% endfor %}  
           </ul>
           </div>
         </div>
         {% endif %}
+      {% endif %}
     </div>
 </div>
-
+{% if not profile.is_private or not another_user  %}
 <div class="mt-4 rounded-3 bg-body-tertiary p-4">
         <h3 class="text-center">Пости</h3>
         {% if not another_user %}
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Створити пост
-        </button>
-        <h5>Кількість статей: {{ user.posts.all.count }}</h5>
+            </button>
         <hr class="my-4">
         {% include 'blog/_include_blocks/_posts_show.html' with posts=user_profile.posts.all edit=True %}
         {% else %}
@@ -96,7 +131,7 @@
         {% include 'blog/_include_blocks/_posts_show.html' with posts=user_profile.posts.all edit=False %}
         {% endif %} 
     </div>
-
+{% endif %}
 
 {% if not another_user %}
 
@@ -137,20 +172,7 @@
       });
   {% endfor %}
 
+</script>
 
-  function dislike(post_id){
-    fetch('{% url "blog:dislike" 0 %}'.replace('0', post_id))
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('btn_dislike_' + post_id).innerText = `👎 ${data.dislike}`;
-    })
-  }
-
-  {% for post in user_profile.posts.all %}
-    document.getElementById('btn_dislike_{{post.id}}').addEventListener('click', function(){
-        dislike({{post.id}});
-    });
-  {% endfor %}
-  </script>
 
 {% endblock %}

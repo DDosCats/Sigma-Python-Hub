@@ -22,6 +22,8 @@ def login_view(request):
                 login(request, user)
                 messages.success(request, f'Ви увійшли як {username}')
                 return redirect('members:profile', username=username)
+        # else:
+        #     messages.add_message(request, messages.ERROR, 'Неправильний логін або пароль', extra_tags='danger')
     else:
         form = AuthenticationForm()
     return render(request, 'members/login.html', {'form': form})
@@ -91,8 +93,8 @@ def profile_update_view(request):
             messages.success(request, 'Ваш профіль успішно оновлено')
         else:
             messages.error(request, 'Вибачте, щось пішло не так')
-    return redirect('main:index')
-    # return redirect('members:profile username')
+        return redirect('members:profile', username=request.user.username)
+ 
     
     
     
@@ -117,4 +119,14 @@ def follow_view(request, username):
         else:
             profile.follow(user)
             messages.success(request, f'Ви підписались на {user.username}')
+    return redirect('members:profile', username=username)
+
+@login_required
+def privacy_view(request, username):
+    user = get_object_or_404(User, username=username)
+    if request.user == user:
+        profile = user.profile
+        profile.is_private = not profile.is_private
+        profile.save()
+        messages.success(request, 'Ваші налаштування приватності успішно змінені')
     return redirect('members:profile', username=username)

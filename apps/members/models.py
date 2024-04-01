@@ -20,6 +20,8 @@ class Profile(models.Model):
     website = models.URLField(verbose_name='Веб-сайт', blank=True)
     phone = models.CharField(verbose_name='Телефон', max_length=15, blank=True)
     
+    is_private = models.BooleanField(verbose_name='Приватний профіль', default=False)
+    
     followers = models.ManyToManyField(User, related_name='following', blank=True)
     
     
