@@ -8,13 +8,9 @@
     
 
         <div class="mt-3 rounded-3 bg-body-tertiary p-4">
-        <div class='text-center'>
-                <h2>Каталог</h2>
-                <p>Кількість категорій: {{ category_count }}</p>
-        </div>
                 <div class='row mt-4'>
                     {% for categor in categories %}
-                        <div class='col-3'>
+                        <div class='col-3 col-sm-3 col-md-1'>
                             <a href='{{ categor.get_absolute_url }}'>
                             <div class='card p-0'>
                                 {% if categor.image %}
@@ -23,18 +19,14 @@
                                     <img src='https://via.placeholder.com/300x200' class='card-img-top' alt='{{ product.name }}'>
                                 {% endif %}
                                 
-                                    <p style='font-size: 20px;' class='text-center'>{{ categor.name }}</p>
+                                    <p style='font-size: 10px;' class='text-center'>{{ categor.name }}</p>
                                
                             </div>
                             </a>
                         </div>
                     {% endfor %}
                 </div>
-            <hr>
-            <div class='text-center'>
-                <h1>Товари:</h1>
-                <p>Кількість товарів: {{ product_count }}</p>
-            </div>
+
             {% if object_list %}
                 <div class='row mt-4'>
                     {% for product in object_list %}
@@ -56,7 +48,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p>Товарів нема</p>
+                <p>Товаров нет</p>
             {% endif %}
         </div>
 {% endblock %}
