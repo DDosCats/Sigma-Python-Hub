@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+import django_filters
 from .models import Catalog, Product,Image
 
 

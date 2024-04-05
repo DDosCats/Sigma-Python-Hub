@@ -26,10 +26,15 @@
                         </div>
                     {% endfor %}
                 </div>
-
-            {% if object_list %}
+                <form method="get" class="form-inline mt-3">
+                    <div class="form-group mb-2">
+                        {{ object_list.form.as_p}}
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-2">Сортировать</button>
+                </form>
+                {% if object_list.qs  %}
                 <div class='row mt-4'>
-                    {% for product in object_list %}
+                    {% for product in object_list.qs %}
                         <div class='col-4'>
                             <div class='card'>
                                 {% if product.main_image %}

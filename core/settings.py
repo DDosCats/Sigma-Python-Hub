@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'apps.members',
     'apps.catalog',
     'apps.order',
+    'django_filters',
 ]
 
 
