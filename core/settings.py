@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'apps.catalog',
     'apps.order',
     'django_filters',
+    "phonenumber_field",
 ]
 
 

@@ -9,7 +9,7 @@ class CartAddProductForm(forms.ModelForm):
         model = Cart
         fields = ('user', 'product', 'quantity')
         widgets = {
-            'user': forms.HiddenInput(),
+            'user': forms.HiddenInput(), # Поле user приймає значення з запиту, тому його не потрібно відображати на формі
             'product': forms.HiddenInput(),
             'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 100, 'value': 1})
         }

@@ -10,6 +10,8 @@ urlpatterns = [
     
     path('profile/update/', profile_update_view, name='profile_update'),
     
+    path('password/change/', password_change_view, name='change_password'),
+    
     path('profile/<str:username>', profile_view, name='profile'),
     path('profile/<str:username>/follow/', follow_view, name='follow'),
     
