@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Каталог{% endblock %}
+
+{% block content %}
+    <div class="container mt-3">
+        <h3>Корзина</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">№</th>
+                    <th scope="col">Фото</th>
+                    <th scope="col">Назва</th>
+                    <th scope="col">Ціна</th>
+                    <th scope="col">Кількість</th>
+                    <th scope="col">Сума</th>
+                    <th scope="col">Дія</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>
+                        {% if item.product.images.all %}
+                        <img src="{{ item.product.images.first.image_thumbnail.url }}" alt="Зображення товару" style="max-width: 45px; max-height: 45px;">
+                        {% else %}
+                            Немає зображення
+                        {% endif %}
+                    </td>
+                    <td><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></td>
+                    <td>{{ item.product.price }}</td>
+                    <td class="d-flex align-items-center">
+                        <a href="{% url 'order:cart_item_update' cart_id=item.id action='add' %}" class="btn btn-primary btn-sm">+</a>
+                        <form method="post" class="mx-2" action="{% url 'order:cart_item_update' cart_id=item.id action='update' %}">
+                            {% csrf_token %}
+                            <input type="number" name="quantity" value="{{ item.quantity }}" class="form-control" style="width: 100px;" onchange="this.form.submit()">
+                        </form>
+                        <a href="{% url 'order:cart_item_update' cart_id=item.id action='remove' %}" class="btn btn-primary btn-sm">-</a>
+                    </td>
+                    <td>{{ item.total_price }}</td>
+                    <td>
+                        <a href="{% url 'order:cart_remove' item.id %}" class="btn btn-danger btn-sm">Видалити</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="4">Всього</td>
+                    <td>{{ total_price }}</td>
+                    <td>
+                        <a href="{% url 'order:cart_ordering' %}" class="btn btn-success btn-sm">Оформити замовлення</a>
+                        <a href="{% url 'order:cart_clear' %}" class="btn btn-danger btn-sm ml-2">Очистити</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

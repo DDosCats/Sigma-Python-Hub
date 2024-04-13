@@ -34,6 +34,7 @@ INTERNAL_IPS = [
     # ...
 ]
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,11 +47,17 @@ INSTALLED_APPS = [
     'ckeditor',
     'imagekit',
     "debug_toolbar",
+    'django_filters',
+    'captcha',
+    'crispy_forms',
+    'crispy_bootstrap5',
     
     'apps.main',
     'apps.blog',
     'apps.members',
     'apps.catalog',
+    'apps.order',
+    "phonenumber_field",
 ]
 
 
@@ -170,7 +177,7 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-from config import EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_PORT
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
+CRISPY_TEMPLATE_PACK = "bootstrap5"
