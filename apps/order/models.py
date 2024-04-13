@@ -2,7 +2,7 @@ from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-
+# Create your models here.
 class Cart(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='Користувач')
     product = models.ForeignKey('catalog.Product', on_delete=models.CASCADE, verbose_name='Товар')
@@ -14,12 +14,12 @@ class Cart(models.Model):
     class Meta:
         verbose_name = 'Кошик'
         verbose_name_plural = 'Кошики'
-        
+        # unique_together = ('user', 'product' ) # Щоб не можна було додати один і той же товар в корзину більше одного разу
     
     def total_price(self):
         return self.product.price * self.quantity
         
-
+#ДОробити модель обраного товару та відображення обраного товару в адмінці
 class Favorite(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='Користувач')
     product = models.ForeignKey('catalog.Product', on_delete=models.CASCADE, verbose_name='Товар')
@@ -30,7 +30,7 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Обране'
         verbose_name_plural = 'Обране'
-        unique_together = ('user', 'product' ) 
+        unique_together = ('user', 'product' ) # Щоб не можна було додати один і той же товар в обране більше одного разу
         
         
 

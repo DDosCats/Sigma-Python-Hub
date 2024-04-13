@@ -9,6 +9,8 @@ from .forms import UserCreateForm, ProfileUpdateForm , UserUpdateForm
 from apps.blog.forms import PostForm
 from .models import Profile
 
+from apps.order.models import Order
+
 
 # Create your views here.
 def login_view(request):
@@ -63,6 +65,7 @@ def profile_view(request, username=None):
         form_create_post = PostForm()
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=request.user.profile)
+        orders = Order.objects.filter(user=request.user).prefetch_related('orderproduct_set').prefetch_related('orderproduct_set__product').prefetch_related('orderproduct_set__product__images').order_by('created_at')
         context = {
             'form_create_post': form_create_post,
             'user_form': user_form,
@@ -70,6 +73,7 @@ def profile_view(request, username=None):
             'user_profile': request.user,
             'profile': request.user.profile,
             'another_user': False,
+            'orders': orders,
         }
     else:
         user = get_object_or_404(User, username=username)
