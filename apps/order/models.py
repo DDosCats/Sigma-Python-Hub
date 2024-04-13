@@ -1,11 +1,11 @@
+from django.contrib.auth.models import User
 from django.db import models
-
 from phonenumber_field.modelfields import PhoneNumberField
+from apps.catalog.models import Product
 
-# Create your models here.
 class Cart(models.Model):
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='Користувач')
-    product = models.ForeignKey('catalog.Product', on_delete=models.CASCADE, verbose_name='Товар')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Користувач')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     quantity = models.PositiveIntegerField(verbose_name='Кількість')
     
     def __str__(self):
@@ -14,15 +14,13 @@ class Cart(models.Model):
     class Meta:
         verbose_name = 'Кошик'
         verbose_name_plural = 'Кошики'
-        # unique_together = ('user', 'product' ) # Щоб не можна було додати один і той же товар в корзину більше одного разу
-    
+        
     def total_price(self):
         return self.product.price * self.quantity
-        
-#ДОробити модель обраного товару та відображення обраного товару в адмінці
+
 class Favorite(models.Model):
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='Користувач')
-    product = models.ForeignKey('catalog.Product', on_delete=models.CASCADE, verbose_name='Товар')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Користувач')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     
     def __str__(self):
         return f'{self.product.name}'
@@ -30,9 +28,7 @@ class Favorite(models.Model):
     class Meta:
         verbose_name = 'Обране'
         verbose_name_plural = 'Обране'
-        unique_together = ('user', 'product' ) # Щоб не можна було додати один і той же товар в обране більше одного разу
-        
-        
+        unique_together = ('user', 'product' ) 
 
 class Order(models.Model):
     STATUS_CHOICES = (
@@ -46,8 +42,7 @@ class Order(models.Model):
         (False, 'Не оплачено')
     )
     
-    
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, verbose_name='Користувач')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Користувач')
     total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Загальна вартість')
     
     first_name = models.CharField(max_length=255, verbose_name='Ім\'я')
@@ -70,12 +65,11 @@ class Order(models.Model):
         
     def __str__(self):
         return f'Замовлення №{self.id}'
-    
-    
+
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name='Замовлення')
-    product = models.ForeignKey('catalog.Product', on_delete=models.CASCADE, verbose_name='Товар')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Товар')
     quantity = models.PositiveIntegerField(verbose_name='Кількість')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Ціна')
     
@@ -87,4 +81,4 @@ class OrderProduct(models.Model):
         verbose_name_plural = 'Товари замовлення'
         
     def total_price(self):
-        return self.product.price * self.quantity
+        return self.price * self.quantity
