@@ -18,3 +18,4 @@ urlpatterns = [
     
     path("complete/<int:order_id>/", OrderComplete.as_view(), name='complete'),
 ]
+#sdfsadd
