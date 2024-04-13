@@ -34,6 +34,7 @@ INTERNAL_IPS = [
     # ...
 ]
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,13 +47,16 @@ INSTALLED_APPS = [
     'ckeditor',
     'imagekit',
     "debug_toolbar",
+    'django_filters',
+    'captcha',
+    'crispy_forms',
+    'crispy_bootstrap5',
     
     'apps.main',
     'apps.blog',
     'apps.members',
     'apps.catalog',
     'apps.order',
-    'django_filters',
     "phonenumber_field",
 ]
 
